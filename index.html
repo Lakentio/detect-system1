@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Sistema</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detector de Sistema Operacional</h1>
+        <button onclick="detectarSistema()">Detectar Meu Sistema</button>
+        <div id="resultado"></div>
+    </div>
+    <script>
+        async function detectarSistema() {
+            try {
+                const response = await fetch('http://localhost:5000/detectar-sistema');
+                const data = await response.json();
+    
+                let logo = '';
+                if (data.sistema_operacional.includes('Ubuntu')) {
+                    logo = '<img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" class="logo">';
+                } else if (data.sistema_operacional.includes('Arch')) {
+                    logo = '<img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Arch_Linux_%22Crystal%22_icon.svg" alt="Arch Linux" class="logo">';
+                } else if (data.sistema_operacional.includes('Debian')) {
+                    logo = '<img src="https://www.debian.org/logos/openlogo-nd.svg" alt="Debian" class="logo">';
+                } else if (data.sistema_operacional.includes('Fedora')) {
+                    logo = '<img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Fedora_logo.svg" alt="Fedora" class="logo">';
+                } else if (data.sistema_operacional.includes('Linux')) {
+                    logo = '<img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" alt="Linux" class="logo">';
+                } else if (data.sistema_operacional.includes('Windows')) {
+                    logo = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/48/Windows_logo_-_2012.svg" alt="Windows" class="logo">';
+                } else if (data.sistema_operacional.includes('Darwin')) {
+                    logo = '<img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="MacOS" class="logo">';
+                }
+    
+                const info = `
+                    ${logo}
+                    <div>
+                        <strong>Sistema Operacional:</strong> ${data.sistema_operacional}<br>
+                        <strong>Arquitetura:</strong> ${data.arquitetura}<br>
+                        <strong>Número de Núcleos:</strong> ${data.num_nucleos}<br>
+                        <strong>Memória RAM:</strong> ${data.memoria_ram}
+                    </div>
+                `;
+    
+                document.getElementById("resultado").innerHTML = info;
+            } catch (error) {
+                document.getElementById("resultado").innerHTML = "Erro ao detectar o sistema.";
+            }
+        }
+    </script>
+</body>
+</html>
